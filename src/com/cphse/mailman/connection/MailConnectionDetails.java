@@ -15,12 +15,12 @@ public final class MailConnectionDetails implements Cloneable{
 
 	public MailConnectionDetails(String mailHost, 
 			int mailPort, String mailUser, String mailPassword, 
-			String protocol, String defaultFolder) {
+			ConnectionProtocol protocol, String defaultFolder) {
 		this.mailHost = mailHost;
 		this.mailPort = mailPort;
 		this.mailUser = mailUser;
 		this.mailPassword = mailPassword;
-		this.mailProtocol = protocol;
+		this.mailProtocol = protocol.name().toLowerCase();
 		this.mailDefFolder = defaultFolder;
 	}
 }

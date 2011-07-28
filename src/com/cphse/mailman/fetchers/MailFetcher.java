@@ -6,6 +6,7 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 
+import com.cphse.mailman.connection.ConnectionProtocol;
 import com.cphse.mailman.connection.MailConnection;
 import com.cphse.mailman.connection.MailConnectionDetails;
 import com.cphse.mailman.connection.MailConnectionPool;
@@ -62,7 +63,8 @@ public abstract class MailFetcher {
 		int port = 993;
 		String user = "Mails@cphse.com";
 		String pass = "Sh1pMail";
-		MailConnectionDetails details = new MailConnectionDetails(host, port, user, pass, "imaps", "INBOX");
+		MailConnectionDetails details = new MailConnectionDetails(host, port, user, pass, ConnectionProtocol.IMAPS, "INBOX");
+		
 		IMAPMailFetcher fetcher = new IMAPMailFetcher(details);
 		Message[] msgs = fetcher.getMessages(0);
 		fetcher.fetchHeaders(msgs);

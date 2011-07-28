@@ -1,5 +1,6 @@
 package com.cphse.mailman.fetchers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -12,6 +13,7 @@ import com.cphse.mailman.connection.ConnectionProtocol;
 import com.cphse.mailman.connection.MailConnection;
 import com.cphse.mailman.connection.MailConnectionDetails;
 import com.cphse.mailman.connection.MailConnectionPool;
+import com.cphse.util.MailUtils;
 
 public abstract class MailFetcher {
 	protected static int DEFAULT_FETCH_AMOUNT = 100;
@@ -49,6 +51,21 @@ public abstract class MailFetcher {
 
 	protected Folder getDefaultFolder() throws MessagingException {
 		return this.connection.getFolder(this.connectionDetails.mailDefFolder);
+	}
+
+	public List<RawMail> getRawMails(Message[] msgs) {
+		ArrayList<RawMail> mails = new ArrayList<RawMail>();
+		for(Message msg : msgs) {
+			System.out.println("Fetching message " + msg.getMessageNumber());
+			try {
+				RawMail mail = MailUtils.createMail(msg);
+				mails.add(mail);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return mails;
 	}
 
 	public boolean isConnected() {

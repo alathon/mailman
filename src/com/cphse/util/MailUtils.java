@@ -9,8 +9,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
-
 import javax.activation.UnsupportedDataTypeException;
 import javax.mail.Address;
 import javax.mail.BodyPart;
@@ -88,7 +86,7 @@ public class MailUtils {
 			}
 			
             // Headers
-            Enumeration allHeaders = message.getAllHeaders();
+            Enumeration<?> allHeaders = message.getAllHeaders();
             HashMap<String, String> mailHeaders = new HashMap<String, String>();
             while (allHeaders.hasMoreElements()) {
                 Header header = (Header) allHeaders.nextElement();

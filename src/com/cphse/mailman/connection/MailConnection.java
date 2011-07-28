@@ -28,7 +28,6 @@ public class MailConnection implements ConnectionListener{
 		mailSession = Session.getDefaultInstance(properties);
 		mailStore = mailSession.getStore(properties.getProperty("mail.store.protocol").toLowerCase());
 		mailStore.addConnectionListener(this);
-		//mailSession.setDebug(true);
 		mailStore.connect(details.mailHost, details.mailPort, details.mailUser, details.mailPassword);
 	}
 

@@ -61,10 +61,10 @@ public abstract class MailFetcher {
 	 * @throws MessagingException 
 	 */
 	public static void main(String[] args) throws InterruptedException, MessagingException {
-		String host = "imap.gmail.com";
+		String host = "host";
 		int port = 993;
-		String user = "Mails@cphse.com";
-		String pass = "Sh1pMail";
+		String user = "mailaddress@place.com";
+		String pass = "n1";
 		MailConnectionDetails details = new MailConnectionDetails(host, port, user, pass, ConnectionProtocol.IMAPS, "INBOX");
 		
 		IMAPMailFetcher fetcher = new IMAPMailFetcher(details);

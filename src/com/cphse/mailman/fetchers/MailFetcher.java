@@ -1,11 +1,13 @@
 package com.cphse.mailman.fetchers;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 
+import com.cphse.dto.RawMail;
 import com.cphse.mailman.connection.ConnectionProtocol;
 import com.cphse.mailman.connection.MailConnection;
 import com.cphse.mailman.connection.MailConnectionDetails;
@@ -68,6 +70,11 @@ public abstract class MailFetcher {
 		IMAPMailFetcher fetcher = new IMAPMailFetcher(details);
 		Message[] msgs = fetcher.getMessages(0);
 		fetcher.fetchHeaders(msgs);
+		List<RawMail> rawMails = fetcher.getRawMails(msgs);
+		for(RawMail mail : rawMails) {
+			System.out.println(String.format("ID: %s Subject: %s\nBody: %s",
+					mail.getServerId(), mail.getSubject(), mail.getBody()));
+		}
 	}
 
 }

@@ -1,12 +1,17 @@
 package com.cphse.mailman.fetchers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.mail.FetchProfile;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.UIDFolder;
 
+import com.cphse.dto.RawMail;
 import com.cphse.mailman.connection.MailConnectionDetails;
+import com.cphse.util.MailUtils;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPFolder.FetchProfileItem;
 
@@ -19,10 +24,23 @@ public class IMAPMailFetcher extends MailFetcher {
 	private FetchProfile getFetchProfile() {
 		FetchProfile prof = new FetchProfile();
 		prof.add(FetchProfileItem.HEADERS);
-		//prof.add(FetchProfileItem.CONTENT_INFO);
-		//prof.add(FetchProfileItem.ENVELOPE);
 		prof.add(UIDFolder.FetchProfileItem.UID);
 		return prof;
+	}
+
+	public List<RawMail> getRawMails(Message[] msgs) {
+		ArrayList<RawMail> mails = new ArrayList<RawMail>();
+		for(Message msg : msgs) {
+			System.out.println("Fetching message " + msg.getMessageNumber());
+			try {
+				RawMail mail = MailUtils.createMail(msg);
+				mails.add(mail);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return mails;
 	}
 
 	public Message[] getMessages(long lastUID) throws MessagingException {

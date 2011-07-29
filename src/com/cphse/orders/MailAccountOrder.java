@@ -21,7 +21,7 @@ public class MailAccountOrder extends com.cphse.queue.Order {
 
 	@Override
 	public OrderType getOrderType() {
-		return OrderType.TEST;
+		return OrderType.MAIL_ACCOUNT_FETCH;
 	}
 
 }

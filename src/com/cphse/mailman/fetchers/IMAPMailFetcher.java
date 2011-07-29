@@ -29,6 +29,7 @@ public class IMAPMailFetcher extends MailFetcher {
 		return defaultFolder.getMessagesByUID(lastUID+1, lastUID + this.maxFetchAmount);
 	}
 	
+	@Override
 	public void fetchHeaders(Message[] msgs) throws MessagingException {
 		FetchProfile prof = this.getFetchProfile();
 		IMAPFolder defaultFolder = (IMAPFolder)this.getDefaultFolder();

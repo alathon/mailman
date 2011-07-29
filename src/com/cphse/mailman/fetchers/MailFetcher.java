@@ -9,7 +9,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 
 import com.cphse.dto.RawMail;
-import com.cphse.mailman.connection.ConnectionProtocol;
 import com.cphse.mailman.connection.MailConnection;
 import com.cphse.mailman.connection.MailConnectionDetails;
 import com.cphse.mailman.connection.MailConnectionPool;
@@ -23,6 +22,16 @@ public abstract class MailFetcher {
 	protected final MailConnection connection;
 	protected final Properties properties;
 
+	private static boolean isIMAP(MailConnectionDetails details) {
+		return (details.mailProtocol.equalsIgnoreCase("imap") ||
+				details.mailProtocol.equalsIgnoreCase("imaps"));
+	}
+	
+	private static boolean isPOP3(MailConnectionDetails details) {
+		return (details.mailProtocol.equalsIgnoreCase("pop3") ||
+				details.mailProtocol.equalsIgnoreCase("pop3s"));
+	}
+
 	private static Properties getProtocolProperties(MailConnectionDetails details) {
 		Properties props = new Properties();
 		props.setProperty("mail.store.protocol", details.mailProtocol);
@@ -34,15 +43,15 @@ public abstract class MailFetcher {
 		return props;
 	}
 
-	public MailFetcher(MailConnectionDetails details) {
+	protected MailFetcher(MailConnectionDetails details) {
 		this(details, MailFetcher.getProtocolProperties(details));
 	}
 
-	public MailFetcher(MailConnectionDetails details, Properties props) {
+	protected MailFetcher(MailConnectionDetails details, Properties props) {
 		this(details, props, MailFetcher.DEFAULT_FETCH_AMOUNT);
 	}
 
-	public MailFetcher(MailConnectionDetails details, Properties properties, int fetchAmt) {
+	protected MailFetcher(MailConnectionDetails details, Properties properties, int fetchAmt) {
 		this.connectionDetails = details;
 		this.properties = properties;
 		this.maxFetchAmount = fetchAmt;
@@ -53,6 +62,16 @@ public abstract class MailFetcher {
 		return this.connection.getFolder(this.connectionDetails.mailDefFolder);
 	}
 
+	public static MailFetcher create(MailConnectionDetails details) {
+		if(MailFetcher.isIMAP(details)) {
+			return new IMAPMailFetcher(details);
+		} else if(MailFetcher.isPOP3(details)) {
+			return new POP3MailFetcher(details);
+		} else {
+			return null;
+		}
+	}
+
 	public List<RawMail> getRawMails(Message[] msgs) {
 		ArrayList<RawMail> mails = new ArrayList<RawMail>();
 		for(Message msg : msgs) {
@@ -61,7 +80,6 @@ public abstract class MailFetcher {
 				RawMail mail = MailUtils.createMail(msg);
 				mails.add(mail);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -71,27 +89,6 @@ public abstract class MailFetcher {
 	public boolean isConnected() {
 		return this.connection.isConnected();
 	}
-
-	/**
-	 * @param args
-	 * @throws InterruptedException 
-	 * @throws MessagingException 
-	 */
-	public static void main(String[] args) throws InterruptedException, MessagingException {
-		String host = "host";
-		int port = 993;
-		String user = "mailaddress@place.com";
-		String pass = "n1";
-		MailConnectionDetails details = new MailConnectionDetails(host, port, user, pass, ConnectionProtocol.IMAPS, "INBOX");
-		
-		IMAPMailFetcher fetcher = new IMAPMailFetcher(details);
-		Message[] msgs = fetcher.getMessages(0);
-		fetcher.fetchHeaders(msgs);
-		List<RawMail> rawMails = fetcher.getRawMails(msgs);
-		for(RawMail mail : rawMails) {
-			System.out.println(String.format("ID: %s Subject: %s\nBody: %s",
-					mail.getServerId(), mail.getSubject(), mail.getBody()));
-		}
-	}
-
+	
+	public abstract void fetchHeaders(Message[] msgs) throws MessagingException;
 }

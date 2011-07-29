@@ -7,8 +7,8 @@ import com.cphse.tasks.MailAccountTask;
 
 public class MailOrderProcessor extends OrderProcessor<MailAccountOrder>{
 
-	public MailOrderProcessor(OrderType orderType, int mininumSize) {
-		super(orderType, mininumSize);
+	public MailOrderProcessor(int mininumSize) {
+		super(OrderType.TEST, mininumSize);
 	}
 
 	@Override

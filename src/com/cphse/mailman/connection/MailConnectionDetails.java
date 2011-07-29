@@ -1,6 +1,14 @@
 package com.cphse.mailman.connection;
 
-public final class MailConnectionDetails implements Cloneable{
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Properties;
+
+public final class MailConnectionDetails implements Serializable{
+	private static final long serialVersionUID = -630780385887491187L;
+
 	public final String mailHost;
 	public final String mailUser;
 	public final String mailPassword;
@@ -11,6 +19,17 @@ public final class MailConnectionDetails implements Cloneable{
 	@Override
 	public String toString() {
 		return String.format("%s@%s", this.mailUser, this.mailHost);
+	}
+
+	public MailConnectionDetails(String fileName) throws FileNotFoundException, IOException {
+		Properties props = new Properties();
+		props.load(new FileInputStream(fileName));
+		this.mailHost = props.getProperty("host");
+		this.mailPort = Integer.parseInt(props.getProperty("port"));
+		this.mailUser = props.getProperty("user");
+		this.mailPassword = props.getProperty("password");
+		this.mailDefFolder = props.getProperty("defaultFolder");
+		this.mailProtocol = props.getProperty("protocol");
 	}
 
 	public MailConnectionDetails(String mailHost, 
